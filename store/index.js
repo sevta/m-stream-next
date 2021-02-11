@@ -20,4 +20,13 @@ export const store = createStore({
       state.data = { ...payload };
     }),
   },
+  spotify: {
+    data: {
+      id: '',
+      displayName: '',
+    },
+    setUser: action((state, payload) => {
+      state.data = { ...payload };
+    }),
+  },
 });

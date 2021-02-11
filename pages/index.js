@@ -1,40 +1,36 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import MusicCard from '../components/MusicCard';
 import Search from '../components/Search';
+import { dynamicSort } from '../helper';
 
-export default function Homepage() {
-  const [youtube, setYoutube] = useState([]);
+const Homepage = () => {
+  const [result, setResult] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
-  useEffect(() => {
-    console.log(youtube.filter((track) => track.type === 'video'));
-  }, [youtube]);
-
   return (
-    <div className='w-full px-5 py-3'>
+    <div className='w-full px-5 pt-3 pb-16'>
       <Search
-        onSearchResult={(data) => setYoutube(data)}
+        onSearchResult={(data) => setResult(data)}
         isLoading={(loading) => setIsLoading(loading)}
+        displayResult={true}
       />
       {isLoading ? (
         <div>loading...</div>
       ) : (
         <div className='searchWrapper'>
-          {youtube.length > 0 && (
+          {result.length > 0 && (
             <React.Fragment>
-              <div onClick={() => setYoutube([])}>clear</div>
+              <div onClick={() => setResult([])}>clear</div>
               <div className='w-full grid grid-cols-6 gap-6 mt-5'>
-                {youtube
-                  .filter((v) => v.type == 'video')
-                  .map((track, index) => (
-                    <MusicCard
-                      key={index}
-                      id={track.id}
-                      title={track.title}
-                      thumbnail={track.thumbnails[0].url}
-                      author={track.author.name}
-                    />
-                  ))}
+                {result.sort(dynamicSort('author')).map((track, index) => (
+                  <MusicCard
+                    key={index}
+                    id={track.id}
+                    title={track.title}
+                    thumbnail={track.thumbnail}
+                    author={track.author}
+                  />
+                ))}
               </div>
             </React.Fragment>
           )}
@@ -42,4 +38,16 @@ export default function Homepage() {
       )}
     </div>
   );
+};
+
+export async function getServerSideProps(context) {
+  console.log('server side props!');
+
+  return {
+    props: {
+      username: 'tesi',
+    },
+  };
 }
+
+export default Homepage;

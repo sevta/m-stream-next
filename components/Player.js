@@ -8,6 +8,9 @@ export default function Player() {
   const { data } = useStoreState((state) => state.track);
   const [trackState, setTrackState] = useState('pause');
   const [volume, setVolume] = useState(50);
+  const [duration, setDuration] = useState(0);
+  const [tick, setTick] = useState(0);
+  const [seekTo, setSeekTo] = useState(0);
   const ytplayerRef = useRef(null);
   const ytplayer = useRef(null);
 
@@ -32,6 +35,8 @@ export default function Player() {
     }
   }, [trackState]);
 
+  useEffect(() => {}, [tick]);
+
   function setup() {
     ytplayer.current = new YTPlayer(ytplayerRef.current, {
       width: 0,
@@ -40,6 +45,13 @@ export default function Player() {
     ytplayer.current.load(data.id);
     ytplayer.current.setVolume(volume);
     ytplayer.current.play();
+    ytplayer.current.on('playing', () => {
+      setDuration(ytplayer.current.getDuration());
+    });
+    ytplayer.current.on('timeupdate', () => {
+      let currentTime = ytplayer.current.getCurrentTime();
+      setTick(currentTime);
+    });
   }
 
   function playTrack() {
@@ -54,6 +66,16 @@ export default function Player() {
 
   function togglePlayPause() {
     setTrackState((prev) => (prev == 'pause' ? 'playing' : 'pause'));
+  }
+
+  function rewind() {
+    let seekTo = tick - 3;
+    if (seekTo !== 0 && seekTo > 0) ytplayer.current?.seek(seekTo);
+  }
+
+  function fastForward() {
+    let seekTo = tick + 3;
+    ytplayer.current?.seek(seekTo);
   }
 
   function renderIcon() {
@@ -102,17 +124,42 @@ export default function Player() {
           />
         </div>
         <div className='flex items-center ml-2'>
-          <div>prev</div>
+          <div className='cursor-pointer' onClick={rewind}>
+            <svg
+              className='w-6 h-6'
+              fill='currentColor'
+              viewBox='0 0 20 20'
+              xmlns='http://www.w3.org/2000/svg'>
+              <path d='M8.445 14.832A1 1 0 0010 14v-2.798l5.445 3.63A1 1 0 0017 14V6a1 1 0 00-1.555-.832L10 8.798V6a1 1 0 00-1.555-.832l-6 4a1 1 0 000 1.664l6 4z'></path>
+            </svg>
+          </div>
           <div className='cursor-pointer' onClick={togglePlayPause}>
             {renderIcon()}
           </div>
-          <div>prev</div>
+          <div className='cursor-pointer' onClick={fastForward}>
+            <svg
+              className='w-6 h-6'
+              fill='currentColor'
+              viewBox='0 0 20 20'
+              xmlns='http://www.w3.org/2000/svg'>
+              <path d='M4.555 5.168A1 1 0 003 6v8a1 1 0 001.555.832L10 11.202V14a1 1 0 001.555.832l6-4a1 1 0 000-1.664l-6-4A1 1 0 0010 6v2.798l-5.445-3.63z'></path>
+            </svg>
+          </div>
         </div>
       </div>
       <div className='flex items-center justify-center ml-4'>
         <RangeSlider
           value={volume}
           onChange={(changeEvent) => setVolume(changeEvent.target.value)}
+        />
+      </div>
+      <div className='flex flex-1 items-center justify-center ml-4'>
+        <RangeSlider
+          value={tick}
+          style={{ width: '100%' }}
+          max={duration}
+          className='w-full'
+          onChange={(changeEvent) => setTick(changeEvent.target.value)}
         />
       </div>
     </div>
