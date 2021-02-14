@@ -5,11 +5,13 @@ const ytsr = require('ytsr');
 export default async function handler(req, res) {
   if (req.method == 'GET') {
     const { q } = req.query;
-    try {
-      const searchResultYoutube = await ytsr(q, { pages: 1 });
-      const spotifySession = await getSession({ req });
+    const searchResultYoutube = await ytsr(q, { pages: 1 });
+    const spotifySession = await getSession({ req });
 
-      if (spotifySession) {
+    try {
+      console.log('get session', spotifySession);
+
+      if (spotifySession?.user?.provider === 'spotify') {
         const { accessToken, refreshToken } = spotifySession.user;
 
         spotifyApi.setAccessToken(accessToken);
@@ -31,6 +33,14 @@ export default async function handler(req, res) {
       }
     } catch (error) {
       console.log(error);
+      res.json({
+        result_youtube: searchResultYoutube.items,
+      });
+    } finally {
+      //   console.log('spotify session', spotifySession);
+      //   res.json({
+      //     result_youtube: searchResultYoutube.items,
+      //   });
     }
   }
 }

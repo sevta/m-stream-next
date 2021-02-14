@@ -12,23 +12,27 @@ export default function Login() {
     return <div>loading...</div>;
   }
 
-  if (!session) {
+  if (session?.user?.provider !== 'spotify' && session == null) {
     return (
-      <div>
-        <div>Login</div>
+      <div className='flex flex-1 items-center justify-center flex-col'>
         <button
-          className='py-3 px-6 rounded-full bg-green-500 text-white'
+          className='py-3 px-6 rounded-full bg-gray-300 text-black font-medium'
+          onClick={() => signIn('github')}>
+          login with github
+        </button>
+        <button
+          className='py-3 px-6 rounded-full bg-gray-300 text-black font-medium mt-4'
           onClick={signIn}>
-          login with spotify
+          login with google
         </button>
       </div>
     );
+  } else {
+    return (
+      <div>
+        <div>Welcome</div>
+        <button onClick={signOut}>logout</button>
+      </div>
+    );
   }
-
-  return (
-    <div>
-      <div>Welcome</div>
-      <button onClick={signOut}>logout</button>
-    </div>
-  );
 }

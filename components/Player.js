@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from 'react';
 import YTPlayer from 'yt-player';
 import 'react-bootstrap-range-slider/dist/react-bootstrap-range-slider.css';
 import RangeSlider from 'react-bootstrap-range-slider';
+import ReactAudioPlayer from 'react-audio-player';
 
 export default function Player() {
   const { data } = useStoreState((state) => state.track);
@@ -13,6 +14,11 @@ export default function Player() {
   const [seekTo, setSeekTo] = useState(0);
   const ytplayerRef = useRef(null);
   const ytplayer = useRef(null);
+  const audioPlayer = useRef(null);
+  const [audioPlayerState, setAudioPlayerState] = useState({
+    src: '',
+    currentTime: 0,
+  });
 
   useEffect(() => {
     data.id !== '' && playTrack(data);
@@ -20,6 +26,11 @@ export default function Player() {
 
   useEffect(() => {
     ytplayer.current?.setVolume(volume);
+    if (audioPlayer.current) {
+      let _vol = volume / 100;
+      console.log(_vol);
+      audioPlayer.current.volume = _vol;
+    }
   }, [volume]);
 
   useEffect(() => {
@@ -29,15 +40,17 @@ export default function Player() {
   useEffect(() => {
     if (trackState == 'pause') {
       ytplayer.current?.play();
+      audioPlayer.current?.play();
     }
     if (trackState == 'playing') {
       ytplayer.current?.pause();
+      audioPlayer.current?.pause();
     }
   }, [trackState]);
 
   useEffect(() => {}, [tick]);
 
-  function setup() {
+  function ytsetup() {
     ytplayer.current = new YTPlayer(ytplayerRef.current, {
       width: 0,
       height: 0,
@@ -54,13 +67,21 @@ export default function Player() {
     });
   }
 
-  function playTrack() {
-    console.log('ytplayer', ytplayer);
-    if (ytplayer.current) {
-      ytplayer.current.destroy();
-      setup();
-    } else {
-      setup();
+  function playTrack(data) {
+    audioPlayer.current?.pause();
+    ytplayer.current?.destroy();
+    if (data.type == 'youtube') {
+      ytsetup();
+    } else if (data.type == 'spotify') {
+      audioPlayer.current.src = data.previewUrl;
+      audioPlayer.current.volume = volume / 100;
+      audioPlayer.current.play();
+      setDuration(audioPlayer.current.duration);
+      audioPlayer.current.ontimeupdate = () => {
+        let _tick = audioPlayer.current.currentTime;
+
+        setTick(_tick);
+      };
     }
   }
 
@@ -116,6 +137,12 @@ export default function Player() {
     <div className='fixed flex bottom-0 left-0 w-full p-5 bg-gray-200'>
       <div className='flex h-full'>
         <div className='absolute -left-full' ref={ytplayerRef}></div>
+        <div className='absolute -left-full'>
+          <ReactAudioPlayer
+            controls
+            ref={(element) => (audioPlayer.current = element?.audioEl?.current)}
+          />
+        </div>
         <div className='rounded-full  w-14 h-14 overflow-hidden'>
           <img
             className='rounded-full w-full h-full object-cover object-center'

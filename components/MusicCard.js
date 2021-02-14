@@ -1,6 +1,13 @@
 import { useStoreActions } from 'easy-peasy';
 
-export default function MusicCard({ id, title, author, thumbnail }) {
+export default function MusicCard({
+  id,
+  title,
+  author,
+  thumbnail,
+  previewUrl,
+  type,
+}) {
   const addTrackToStore = useStoreActions((actions) => actions.track.setTrack);
 
   function handleTrackPlay() {
@@ -9,6 +16,8 @@ export default function MusicCard({ id, title, author, thumbnail }) {
       title,
       author,
       thumbnail,
+      previewUrl,
+      type,
     });
   }
 

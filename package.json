@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "next dev",
+    "dev": "next",
     "build": "next build",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -15,12 +15,14 @@
     "axios": "^0.21.1",
     "easy-peasy": "^4.0.1",
     "formik": "^2.2.6",
+    "howler": "^2.2.1",
     "moment": "^2.29.1",
     "next": "^10.0.6",
     "next-auth": "^3.4.1",
     "next-connect": "^0.9.1",
     "postcss": "^8.2.4",
     "react": "^16.8.0",
+    "react-audio-player": "^0.14.0",
     "react-bootstrap-range-slider": "^2.0.2",
     "react-dom": "^16.8.0",
     "spotify-web-api-node": "^5.0.2",

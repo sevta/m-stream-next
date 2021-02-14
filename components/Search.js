@@ -62,7 +62,7 @@ export default function Search({ onSearchResult, isLoading, displayResult }) {
             thumbnail: track.thumbnails[0].url,
             preview_url: null,
             uri: track.url,
-            type: 'youtbue',
+            type: 'youtube',
           });
         });
         setYoutubeResult(newdata);

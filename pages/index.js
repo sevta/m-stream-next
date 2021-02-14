@@ -12,7 +12,7 @@ const Homepage = () => {
       <Search
         onSearchResult={(data) => setResult(data)}
         isLoading={(loading) => setIsLoading(loading)}
-        displayResult={true}
+        displayResult={false}
       />
       {isLoading ? (
         <div>loading...</div>
@@ -29,6 +29,8 @@ const Homepage = () => {
                     title={track.title}
                     thumbnail={track.thumbnail}
                     author={track.author}
+                    previewUrl={track.preview_url}
+                    type={track.type}
                   />
                 ))}
               </div>

@@ -1,27 +1,18 @@
 import { StoreProvider } from 'easy-peasy';
-import { Provider, session } from 'next-auth/client';
+import { Provider } from 'next-auth/client';
 
 import '../styles/globals.css';
 import { store } from '../store';
 import Layout from './Layout';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 function App({ Component, pageProps, spotifyProfile }) {
-  const [loading, setLoading] = useState(true);
-  useEffect(() => {
-    console.log({ spotifyProfile });
-    store.dispatch.spotify.setUser({
-      ...spotifyProfile,
-    });
-    setLoading(false);
-
-    console.log(pageProps);
-  }, [spotifyProfile]);
+  const [isLoading, setIsLoading] = useState(false);
 
   return (
     <Provider session={pageProps.session}>
       <StoreProvider store={store}>
-        {loading ? (
+        {isLoading ? (
           <div className='w-full min-h-screen flex items-center justify-center text-5xl font-medium'>
             Loading
           </div>
