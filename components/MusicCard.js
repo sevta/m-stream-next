@@ -61,7 +61,13 @@ export default function MusicCard({
         </div>
         <div className='p-3 '>
           <div className='font-medium'>{title}</div>
-          <div className='text-sm text-gray-500 mt-2'>{author}</div>
+          <div className='text-sm text-gray-500 mt-1'>{author}</div>
+          <div
+            className={`text-sm font-medium  mt-1 flex ${
+              type == 'youtube' && 'text-red-500 '
+            } ${type == 'spotify' && 'text-green-500 '}`}>
+            {type}
+          </div>
         </div>
       </div>
     );
