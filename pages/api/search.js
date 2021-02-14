@@ -1,5 +1,5 @@
 import { spotifyApi } from '../../utils/spotify';
-
+import { getSession } from 'next-auth/client';
 const ytsr = require('ytsr');
 
 export default async function handler(req, res) {
@@ -7,9 +7,13 @@ export default async function handler(req, res) {
     const { q } = req.query;
     try {
       const searchResultYoutube = await ytsr(q, { pages: 1 });
-      const spotifytoken = spotifyApi.getAccessToken();
+      const spotifySession = await getSession({ req });
 
-      if (spotifytoken) {
+      if (spotifySession) {
+        const { accessToken, refreshToken } = spotifySession.user;
+
+        spotifyApi.setAccessToken(accessToken);
+        spotifyApi.setRefreshToken(refreshToken);
         // Do search using the access token
         const searchResultSpotify = await spotifyApi.searchTracks(q, {
           limit: 20,

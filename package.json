@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "next dev",
+    "build": "next build",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
@@ -16,6 +17,8 @@
     "formik": "^2.2.6",
     "moment": "^2.29.1",
     "next": "^10.0.6",
+    "next-auth": "^3.4.1",
+    "next-connect": "^0.9.1",
     "postcss": "^8.2.4",
     "react": "^16.8.0",
     "react-bootstrap-range-slider": "^2.0.2",
