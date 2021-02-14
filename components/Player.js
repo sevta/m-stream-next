@@ -1,9 +1,10 @@
 import { useStoreState } from 'easy-peasy';
 import { useEffect, useRef, useState } from 'react';
 import YTPlayer from 'yt-player';
-import 'react-bootstrap-range-slider/dist/react-bootstrap-range-slider.css';
 import RangeSlider from 'react-bootstrap-range-slider';
 import ReactAudioPlayer from 'react-audio-player';
+
+import 'react-bootstrap-range-slider/dist/react-bootstrap-range-slider.css';
 
 export default function Player() {
   const { data } = useStoreState((state) => state.track);
@@ -134,7 +135,7 @@ export default function Player() {
   }
 
   return (
-    <div className='fixed flex bottom-0 left-0 w-full p-5 bg-gray-200'>
+    <div className='playerWrapper fixed flex bottom-0 left-0 w-full p-5 bg-gray-200 border-t'>
       <div className='flex h-full'>
         <div className='absolute -left-full' ref={ytplayerRef}></div>
         <div className='absolute -left-full'>
@@ -189,6 +190,17 @@ export default function Player() {
           onChange={(changeEvent) => setTick(changeEvent.target.value)}
         />
       </div>
+      <style jsx>
+        {`
+          @supports (-webkit-backdrop-filter: none) or (backdrop-filter: none) {
+            .playerWrapper {
+              -webkit-backdrop-filter: blur(10px);
+              backdrop-filter: blur(15px);
+              background-color: rgba(255, 255, 255, 0.5);
+            }
+          }
+        `}
+      </style>
     </div>
   );
 }

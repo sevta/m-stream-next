@@ -5,10 +5,10 @@ const ytsr = require('ytsr');
 export default async function handler(req, res) {
   if (req.method == 'GET') {
     const { q } = req.query;
-    const searchResultYoutube = await ytsr(q, { pages: 1 });
-    const spotifySession = await getSession({ req });
 
     try {
+      const searchResultYoutube = await ytsr(q, { pages: 1 });
+      const spotifySession = await getSession({ req });
       console.log('get session', spotifySession);
 
       if (spotifySession?.user?.provider === 'spotify') {
